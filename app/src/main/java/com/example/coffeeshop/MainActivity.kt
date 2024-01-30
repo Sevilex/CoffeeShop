@@ -50,10 +50,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.geometry.center
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.LinearGradientShader
 import androidx.compose.ui.graphics.RadialGradientShader
 import androidx.compose.ui.graphics.Shader
 import androidx.compose.ui.graphics.ShaderBrush
@@ -73,7 +75,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             CoffeeShopTheme {
-                CoffeeShop()
+               // CoffeeShop()
+                DescriptionPage()
             }
         }
     }
@@ -96,6 +99,17 @@ fun CoffeeShop() {
         }
     }
 
+    val gradient = object : ShaderBrush() {
+        override fun createShader(size: Size): Shader {
+            return LinearGradientShader(
+                from = Offset.Zero,
+                to = Offset(size.height,size.width),
+                colors = listOf(Color(0xFFE48F45), Color(0xFF21170D)),
+                colorStops = listOf(0f, 0.70f)
+            )
+        }
+    }
+
     Column(
         Modifier
             .fillMaxSize()
@@ -111,62 +125,12 @@ fun CoffeeShop() {
         Column(
             Modifier
                 .padding(horizontal = 20.dp)
-                .background(Color.White)
+                .background(gradient)
         ) {
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 10.dp), Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = "Hot Coffee",
-                    style = MaterialTheme.typography.titleMedium,
-                    color = Color.Black,
-                    fontWeight = FontWeight.Bold
-                )
+            HeaderItem()
+            SearchBox()
 
-                Text(
-                    text = "Cold Coffee",
-                    style = MaterialTheme.typography.titleLarge,
-                    color = Color.LightGray
-                )
 
-                Text(
-                    text = "Others",
-                    style = MaterialTheme.typography.titleLarge,
-                    color = Color.LightGray
-                )
-            }
-            Box(Modifier.fillMaxWidth()) {
-                var txt by remember { mutableStateOf("") }
-
-                TextField(
-                    value = txt,
-                    onValueChange = { txt = it },
-                    label = {
-                        Text(
-                            text = "Search your coffee",
-                            color = Color.LightGray
-                        )
-                    },
-                    shape = CircleShape,
-                    colors = TextFieldDefaults.textFieldColors(
-                        unfocusedIndicatorColor = Color.Transparent,
-                        focusedIndicatorColor = Color.Transparent,
-                        //backgroundColor = Color(0xFFFFFFFF)
-                    ),
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Filled.Search,
-                            contentDescription = "",
-                            tint = Color.LightGray
-                        )
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .border(1.dp, Color.LightGray, shape = CircleShape)
-                )
-            }
             Row(Modifier.weight(1F)) {
                 Column(
                     Modifier
@@ -265,7 +229,7 @@ fun CoffeeShop() {
                                         tint = Color(0xFFD4A078),
                                         modifier = Modifier
                                             .size(48.dp)
-                                            .background(Color.White)
+                                            .background(colorResource(id = R.color.Brown))
                                     )
                                 }
                             }
@@ -282,6 +246,76 @@ fun CoffeeShop() {
 }
 
 @Composable
+@OptIn(ExperimentalMaterial3Api::class)
+private fun SearchBox() {
+    Box(
+        Modifier
+            .fillMaxWidth()
+    ) {
+        var txt by remember { mutableStateOf("") }
+
+        TextField(
+            value = txt,
+            onValueChange = { txt = it },
+            label = {
+                Text(
+                    text = "جست و جو",
+                    color = colorResource(id = R.color.Brown)
+                )
+            },
+            shape = CircleShape,
+            colors =
+            TextFieldDefaults.textFieldColors(
+                unfocusedIndicatorColor = Color.Transparent,
+                focusedIndicatorColor = Color.Transparent,
+                //backgroundColor = Color(0xFFFFFFFF)
+            ),
+            leadingIcon = {
+                Icon(
+                    imageVector = Icons.Filled.Search,
+                    contentDescription = "",
+                    tint = colorResource(id = R.color.Brown)
+                )
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .border(1.dp, Color.LightGray, shape = CircleShape)
+        )
+    }
+}
+
+@Composable
+private fun HeaderItem() {
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .padding(vertical = 10.dp), Arrangement.SpaceBetween
+    ) {
+        Text(
+            modifier = Modifier.padding(start = 10.dp, top = 4.dp),
+            text = "قهوه داغ",
+            style = MaterialTheme.typography.titleLarge,
+            color = Color.Black,
+            fontWeight = FontWeight.Bold
+        )
+
+        Text(
+            modifier = Modifier.padding(top = 4.dp, bottom = 2.dp),
+            text = "قهوه سرد",
+            style = MaterialTheme.typography.titleLarge,
+            color = Color.LightGray
+        )
+
+        Text(
+            modifier = Modifier.padding(end = 10.dp, top = 4.dp, bottom = 2.dp),
+            text = "موراد دیگر",
+            style = MaterialTheme.typography.titleLarge,
+            color = Color.LightGray
+        )
+    }
+}
+
+@Composable
 private fun TopTextBox() {
     Column(
         Modifier
@@ -294,8 +328,8 @@ private fun TopTextBox() {
             fontWeight = FontWeight.Bold,
             color = Color.White,
             modifier = Modifier.padding(
-                start = 165.dp,
-                top = 100.dp,
+                start = 155.dp,
+                top = 80.dp,
                 bottom = 10.dp
             ),
             textAlign = TextAlign.Center
@@ -314,7 +348,7 @@ private fun TopTextBox() {
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
                 color = Color.White,
-                textAlign = TextAlign.Start
+                textAlign = TextAlign.Center
             )
         }
     }
@@ -348,198 +382,3 @@ private fun TopImageMenu() {
     }
 }
 
-
-@Composable
-fun DescriptionPage() {
-    Column(Modifier.fillMaxSize()) {
-        Card(
-            Modifier
-                .background(Color.Black)
-                .weight(0.5F)
-        ) {
-
-            Column {
-                Card(
-                    Modifier
-                        .background(Color.Black)
-                        .weight(0.5F),
-                ) {
-                    Box(contentAlignment = Alignment.TopCenter) {
-                        Image(
-                            painter = painterResource(id = R.drawable.macchiato_2),
-                            contentDescription = null,
-                            contentScale = ContentScale.FillWidth,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    }
-
-                    Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .height(50.dp)
-                            .padding(start = 10.dp, top = 10.dp)
-                    ) {
-                        IconButton(onClick = {}) {
-                            Icon(
-                                imageVector = Icons.Outlined.ArrowBack,
-                                contentDescription = "",
-                                modifier = Modifier.size(35.dp),
-                                tint = Color.White
-                            )
-                        }
-                    }
-                }
-
-                Column(
-                    Modifier
-                        .weight(0.5F)
-                        .fillMaxWidth()
-                        .padding(start = 20.dp, end = 20.dp, top = 25.dp, bottom = 10.dp)
-                        .background(Color.White)
-                ) {
-
-                    Column(Modifier.weight(1F)) {
-                        Text(
-                            text = "Macchiato",
-                            style = MaterialTheme.typography.headlineMedium,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.Black
-                        )
-
-                        Spacer(modifier = Modifier.height(15.dp))
-
-                        Row(Modifier.fillMaxWidth()) {
-                            for (i in 1..5) {
-                                Icon(
-                                    imageVector = Icons.Filled.Star,
-                                    contentDescription = "",
-                                    modifier = Modifier.size(25.dp),
-                                    tint = Color(0xFFFFB42D)
-                                )
-                            }
-                        }
-
-
-
-                        Spacer(modifier = Modifier.height(25.dp))
-
-                        Text(
-                            text = "Description",
-                            style = MaterialTheme.typography.titleLarge,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.Black
-                        )
-
-                        Spacer(modifier = Modifier.height(10.dp))
-
-                        Text(
-                            text = "Caffè macchiato, sometimes called espresso macchiato, is an espresso coffee " +
-                                    "drink with a small amount of milk, usually foamed. In Italian, macchiato means " +
-                                    "\"stained\" or \"spotted\" so the literal translation of caffè macchiato is " +
-                                    "\"stained” or “marked coffee.” \n" +
-                                    "Caffè macchiato, sometimes called espresso macchiato, is an espresso coffee " +
-                                    "drink with a small amount of milk, usually foamed. In Italian, macchiato means " +
-                                    "\"stained\" or \"spotted\" so the literal translation of caffè macchiato is " +
-                                    "\"stained” or “marked coffee.”",
-                            textAlign = TextAlign.Justify,
-                            style = MaterialTheme.typography.titleLarge,
-                            color = Color.Black
-                        )
-                    }
-
-
-
-
-
-
-
-
-
-                    Row(
-                        Modifier
-                            .height(75.dp)
-                            .fillMaxWidth()
-                    ) {
-                        Column(
-                            Modifier
-                                .fillMaxHeight()
-                                .weight(0.5F),
-                            verticalArrangement = Arrangement.Center
-                        ) {
-                            Text(
-                                text = "Price",
-                                style = MaterialTheme.typography.titleLarge,
-                                color = Color.LightGray
-                            )
-                            Text(
-                                text = "Rp 25.000",
-                                color = Color.Black,
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Bold
-                            )
-                        }
-
-                        Box(
-                            modifier = Modifier.fillMaxHeight(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Button(
-                                onClick = {},
-                                colors = ButtonDefaults.buttonColors(
-                                    //backgroundColor = Color(0xFFD4A078),
-                                    contentColor = Color.White,
-                                ),
-                                modifier = Modifier
-                                    .width(200.dp)
-                                    .height(50.dp),
-                                enabled = true
-                            ) {
-                                Text(
-                                    text = "Add To Cart",
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.Bold
-                                )
-                            }
-                        }
-                    }
-                }
-            }
-
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .height(50.dp)
-                    .padding(20.dp, 25.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.End
-            ) {
-                var color = Color.LightGray
-
-                Box(
-                    modifier = Modifier
-                        .shadow(
-                            elevation = 10.dp,
-                            shape = CircleShape
-                        )
-                ) {
-                    IconButton(
-                        onClick = {
-                            color = if (color == Color.LightGray) Color.Red else Color.LightGray
-                        },
-                        modifier = Modifier
-                            .size(50.dp)
-                            .clip(CircleShape)
-                            .background(Color.White)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Outlined.Favorite,
-                            contentDescription = "",
-                            modifier = Modifier.size(35.dp),
-                            tint = color
-                        )
-                    }
-                }
-            }
-        }
-    }
-}
